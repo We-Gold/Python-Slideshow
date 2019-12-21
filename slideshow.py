@@ -17,9 +17,11 @@ class Slideshow(tkinter.Tk):
         self.slide.pack()
         self.attributes("-fullscreen",True)
         self.configure(background='black',borderwidth=0,highlightthickness=0)
+        self.imageIndex = 0
+        self.image_name = self.images[0]
 
     def set_images(self, images):
-         self.images = cycle(images)
+         self.images = images
 
     def center(self):
         self.update_idletasks()
@@ -27,10 +29,19 @@ class Slideshow(tkinter.Tk):
         h = self.winfo_screenheight()
         self.geometry("%dx%d+0+0" % (w, h))
 
-    def set_image(self):
-        self.image_name = next(self.images)
-        filename, ext = os.path.splitext(self.image_name)
+    def nextImage(self):
+        self.image_name = self.images[self.imageIndex % len(self.images)]
+        self.imageIndex+=1
+        self.set_image()
+        self.display()
 
+    def previousImage(self):
+        self.image_name = self.images[self.imageIndex % len(self.images)]
+        self.imageIndex-=1
+        self.set_image()
+        self.display()
+
+    def set_image(self):
         w = self.winfo_screenwidth()
         h = self.winfo_screenheight()
 
@@ -44,12 +55,14 @@ class Slideshow(tkinter.Tk):
         self.image = ImageTk.PhotoImage(pilImage)
         
     def main(self):
-        self.set_image()
+        self.nextImage()
+    
+    def display(self):
         self.slide.config(image=self.image)
         self.title(self.image_name)
         self.center()
         self.after(self.slide_interval, self.start)
-    
+
     def start(self):
         self.main()
         self.mainloop()
@@ -69,4 +82,5 @@ random.shuffle(images)
 # start the slideshow
 slideshow = Slideshow(images, slide_interval)
 slideshow.bind("<Escape>",lambda e: slideshow.destroy())
+slideshow.bind("<Left>",lambda e: slideshow.previousImage())
 slideshow.start()
