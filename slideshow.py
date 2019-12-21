@@ -5,6 +5,7 @@ import tkinter
 
 from itertools import cycle
 from PIL import Image, ImageTk
+import time
 
 class Slideshow(tkinter.Tk):
     def __init__(self, images, slide_interval):
@@ -19,6 +20,8 @@ class Slideshow(tkinter.Tk):
         self.configure(background='black',borderwidth=0,highlightthickness=0)
         self.imageIndex = 0
         self.image_name = self.images[0]
+        self.last_time = time.time()
+        self.forward = True
 
     def set_images(self, images):
          self.images = images
@@ -41,6 +44,9 @@ class Slideshow(tkinter.Tk):
         self.set_image()
         self.display()
 
+    def back(self):
+        self.forward = False
+
     def set_image(self):
         w = self.winfo_screenwidth()
         h = self.winfo_screenheight()
@@ -61,14 +67,28 @@ class Slideshow(tkinter.Tk):
         self.slide.config(image=self.image)
         self.title(self.image_name)
         self.center()
-        self.after(self.slide_interval, self.start)
+        #self.after(self.slide_interval, self.start)
 
     def start(self):
-        self.main()
-        self.mainloop()
+        #self.main()
+        #self.mainloop()
+        self.nextImage()
+        while True:
+            while(time.time() < self.last_time + self.slide_interval):
+                self.update()
+                self.update_idletasks()
+                # Check for changes
+                if(self.forward == False):
+                    break
 
+            self.last_time = time.time()
+            if(self.forward == True):
+                self.nextImage()
+            else:
+                self.previousImage()
+                self.forward = True
 
-slide_interval = 4000
+slide_interval = 4
 
 import glob
 import random
@@ -82,5 +102,5 @@ random.shuffle(images)
 # start the slideshow
 slideshow = Slideshow(images, slide_interval)
 slideshow.bind("<Escape>",lambda e: slideshow.destroy())
-slideshow.bind("<Left>",lambda e: slideshow.previousImage())
+slideshow.bind("<Left>",lambda e: slideshow.back())
 slideshow.start()
