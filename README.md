@@ -1,15 +1,2 @@
-**Requirements**:
-
-* Python 2.7+ or 3.2+
-* pyglet
-
-**Command Line Help**::
-
-    $ ./slideshow.py -h
-    usage: slideshow.py dir
-
-    positional arguments:
-      dir              directory of images
-
-**Example**::
-    $ python slideshow.py /dir
+## Usage
+Specify the folder where the images are located inside of the slideshow.py file (path).
