@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Slideshow!</title>
+    <link rel="stylesheet" href="../static/bulma.min.css">
+    <link rel="stylesheet" href="../static/css/all.min.css">
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+
+<body>
+    <div class="head-bar">
+        <p class="white">Slideshow!</p>
+    </div>
+    <div id="center">
+        <a href="/back" class="icon-button">
+            <i class="fas fa-arrow-circle-left"></i>
+        </a>
+        <a href="/toggle_pause" class="icon-button">
+            {% if paused == True %}
+            <i class="fas fa-pause-circle"></i>
+            {% else %}
+            <i class="fas fa-play-circle"></i>
+            {% endif %}
+        </a>
+        <a href="/skip" class="icon-button">
+            <i class="fas fa-arrow-circle-right"></i>
+        </a>
+    </div>
+</body>
+
+</html>

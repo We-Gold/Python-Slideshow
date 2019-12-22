@@ -1,0 +1,36 @@
+html,body {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    background-color: rgb(48, 48, 48);
+    color: white;
+}
+
+.head-bar {
+    width: 100%;
+    height: 15%;
+    background-color: coral;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 4em;
+}
+
+
+.white {
+    color: white !important;
+}
+
+#center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 85%;
+}
+
+.icon-button {
+    font-size: 15em;
+    color: coral;
+}

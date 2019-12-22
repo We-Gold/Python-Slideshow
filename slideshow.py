@@ -22,6 +22,8 @@ class Slideshow(tkinter.Tk):
         self.image_name = self.images[0]
         self.last_time = time.time()
         self.forward = True
+        self.skip = False
+        self.pause = False
 
     def set_images(self, images):
          self.images = images
@@ -46,6 +48,14 @@ class Slideshow(tkinter.Tk):
 
     def back(self):
         self.forward = False
+        self.skip = False
+
+    def toggle_pause(self):
+        self.pause = not self.pause
+
+    def skipImage(self):
+        self.skip = True
+        self.forward = True
 
     def set_image(self):
         w = self.winfo_screenwidth()
@@ -78,13 +88,20 @@ class Slideshow(tkinter.Tk):
                 self.update()
                 self.update_idletasks()
                 # Check for changes
-                if(self.forward == False):
+                if(self.forward == False or self.skip == True or self.pause == True):
                     break
 
             self.last_time = time.time()
+            if(self.pause):
+                while(self.pause):
+                    self.update()
+                    self.update_idletasks()
+                    self.last_time = time.time()
+
             if(self.forward == True):
                 self.nextImage()
-            else:
+                self.skip = False
+            elif(self.forward == False):
                 self.previousImage()
                 self.forward = True
 
@@ -103,4 +120,6 @@ random.shuffle(images)
 slideshow = Slideshow(images, slide_interval)
 slideshow.bind("<Escape>",lambda e: slideshow.destroy())
 slideshow.bind("<Left>",lambda e: slideshow.back())
+slideshow.bind("<Right>",lambda e: slideshow.back())
+slideshow.bind("<space>",lambda e: slideshow.toggle_pause())
 slideshow.start()
