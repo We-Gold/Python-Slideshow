@@ -6,6 +6,7 @@ import tkinter
 from itertools import cycle
 from PIL import Image, ImageTk
 import time
+import _thread
 
 class Slideshow(tkinter.Tk):
     def __init__(self, images, slide_interval):
@@ -77,38 +78,12 @@ class Slideshow(tkinter.Tk):
         self.slide.config(image=self.image)
         self.title(self.image_name)
         self.center()
-        #self.after(self.slide_interval, self.start)
-
-    def start(self):
-        #self.main()
-        #self.mainloop()
-        self.nextImage()
-        while True:
-            while(time.time() < self.last_time + self.slide_interval):
-                self.update()
-                self.update_idletasks()
-                # Check for changes
-                if(self.forward == False or self.skip == True or self.pause == True):
-                    break
-
-            self.last_time = time.time()
-            if(self.pause):
-                while(self.pause):
-                    self.update()
-                    self.update_idletasks()
-                    self.last_time = time.time()
-
-            if(self.forward == True):
-                self.nextImage()
-                self.skip = False
-            elif(self.forward == False):
-                self.previousImage()
-                self.forward = True
 
 slide_interval = 4
 
 import glob
 import random
+import sys
 images = glob.glob("*.jpg")
 path = "images"
 exts = ["jpg", "bmp", "png", "gif", "jpeg"]
@@ -117,9 +92,68 @@ random.shuffle(images)
 random.shuffle(images)
 
 # start the slideshow
+global slideshow
 slideshow = Slideshow(images, slide_interval)
 slideshow.bind("<Escape>",lambda e: slideshow.destroy())
-slideshow.bind("<Left>",lambda e: slideshow.back())
-slideshow.bind("<Right>",lambda e: slideshow.back())
-slideshow.bind("<space>",lambda e: slideshow.toggle_pause())
-slideshow.start()
+
+def background():
+    slideshow.nextImage()
+    while True:
+        slideshow.update()
+        slideshow.update_idletasks()
+
+        if(slideshow.pause):
+            continue
+
+        if(time.time() > slideshow.last_time + slideshow.slide_interval):
+            slideshow.nextImage()
+            slideshow.last_time = time.time()
+
+        if(slideshow.skip):
+            slideshow.skip = False
+            slideshow.nextImage()
+            slideshow.last_time = time.time()
+            continue
+        
+        if(not slideshow.forward):
+            slideshow.forward = True
+            slideshow.previousImage()
+            slideshow.last_time = time.time()
+            continue
+
+########################################################
+
+from flask import Flask, render_template, request
+app = Flask(__name__)
+
+@app.route("/")
+def index():
+	templateData = {
+      'paused' : False,
+    }
+	return render_template('index.html', **templateData)
+
+@app.route("/<action>")
+def action(action):
+    if(action == "back"):
+        slideshow.forward = False
+        templateData = {
+            'paused' : slideshow.pause,
+        }
+        return render_template('index.html', **templateData)
+    elif(action == "toggle_pause"):
+        slideshow.pause = not slideshow.pause
+        templateData = {
+            'paused' : slideshow.pause,
+        }
+        return render_template('index.html', **templateData)
+    elif(action == "skip"):
+        slideshow.skip = True
+        templateData = {
+            'paused' : slideshow.pause,
+        }
+        return render_template('index.html', **templateData)
+
+if __name__ == '__main__':
+    _thread.start_new_thread(app.run,('0.0.0.0',))
+    background()

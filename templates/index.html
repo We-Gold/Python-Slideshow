@@ -6,9 +6,16 @@
     <link rel="stylesheet" href="../static/bulma.min.css">
     <link rel="stylesheet" href="../static/css/all.min.css">
     <link rel="stylesheet" href="../static/style.css">
+    <link rel="manifest" href="../static/app-images/manifest.json">
+    <link rel="shortcut icon" href="../static/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="../static/app-images/images/icons/icon-192x192.png" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="192x192" href="../static/app-images/images/icons/icon-192x192.png">
 </head>
 
 <body>
+    <!--<a id="destroyBtn" href="/quit">
+        <i class="fas fa-times-circle"></i>
+    </a>-->
     <div class="head-bar">
         <p class="white">Slideshow!</p>
     </div>
@@ -17,7 +24,7 @@
             <i class="fas fa-arrow-circle-left"></i>
         </a>
         <a href="/toggle_pause" class="icon-button">
-            {% if paused == True %}
+            {% if paused == False %}
             <i class="fas fa-pause-circle"></i>
             {% else %}
             <i class="fas fa-play-circle"></i>
