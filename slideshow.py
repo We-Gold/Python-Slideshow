@@ -75,6 +75,18 @@ class Slideshow(tkinter.Tk):
         self.nextImage()
     
     def display(self):
+        # Clear the screen with a black background
+        """w = self.winfo_screenwidth()
+        h = self.winfo_screenheight()
+        image = Image.open("blank.jpg")
+        image = image.resize((w,h))
+        blank = ImageTk.PhotoImage(image)
+
+        self.slide.config(image=blank)
+        self.title(self.image_name)
+        self.center()
+        """
+        # Display the image
         self.slide.config(image=self.image)
         self.title(self.image_name)
         self.center()
